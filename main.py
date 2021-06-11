@@ -1,4 +1,6 @@
 import pygame
+import discord
+import threading
 
 
 class GameState:
@@ -16,6 +18,10 @@ class GameState:
         return self.states
 
 
+SP = discord.SpaceGameRPC()
+x = threading.Thread(target=SP.start)
+x.daemon = True
+x.start()
 GSInstance = GameState()
 WIDTH, HEIGHT = 900, 500
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
@@ -26,14 +32,14 @@ pygame.init()
 
 def button(window, position, text):
     font = pygame.font.SysFont("Arial", 50)
-    text_render = font.render(text, 1, (255, 0, 0))
+    text_render = font.render(text, 1, (255, 255, 255))
     x, y, w, h = text_render.get_rect()
     x, y = position
-    pygame.draw.line(window, (150, 150, 150), (x, y), (x + w, y), 5)
-    pygame.draw.line(window, (150, 150, 150), (x, y - 2), (x, y + h), 5)
-    pygame.draw.line(window, (50, 50, 50), (x, y + h), (x + w, y + h), 5)
-    pygame.draw.line(window, (50, 50, 50), (x + w, y + h), [x + w, y], 5)
-    pygame.draw.rect(window, (100, 100, 100), (x, y, w, h))
+    pygame.draw.line(window, (150, 150, 150), (x, y), (x + w, y), 0)
+    pygame.draw.line(window, (150, 150, 150), (x, y - 2), (x, y + h), 0)
+    pygame.draw.line(window, (50, 50, 50), (x, y + h), (x + w, y + h), 0)
+    pygame.draw.line(window, (50, 50, 50), (x + w, y + h), [x + w, y], 0)
+    # pygame.draw.rect(window, (100, 100, 100), (x, y, w, h))
     return window.blit(text_render, (x, y))
 
 
@@ -68,6 +74,7 @@ def main():
                     run = False
 
     pygame.quit()
+    exit()
 
 
 if __name__ == "__main__":
