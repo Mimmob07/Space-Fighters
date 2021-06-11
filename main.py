@@ -1,28 +1,12 @@
 import pygame
 import discord
 import threading
-
-
-class GameState:
-    def __init__(self):
-        self.states = ["Main Menu", "Playing Game", "In Game Menu"]
-        self.GAMESTATE = self.states[0]
-
-    def set_gamestate(self, state):
-        self.GAMESTATE = self.states[state]
-
-    def get_gamestate(self):
-        return self.GAMESTATE
-
-    def get_states(self):
-        return self.states
-
+from discord import GSInstance
 
 SP = discord.SpaceGameRPC()
 x = threading.Thread(target=SP.start)
 x.daemon = True
 x.start()
-GSInstance = GameState()
 WIDTH, HEIGHT = 900, 500
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 bg = pygame.image.load("assets/bg.png")
@@ -74,7 +58,6 @@ def main():
                     run = False
 
     pygame.quit()
-    exit()
 
 
 if __name__ == "__main__":

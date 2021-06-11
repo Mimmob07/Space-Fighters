@@ -1,5 +1,7 @@
 import time
 import discord_rpc
+from gamestate import GameState
+GSInstance = GameState()
 
 
 class SpaceGameRPC:
@@ -26,15 +28,13 @@ class SpaceGameRPC:
         discord_rpc.initialize('852656088586125315', callbacks=callbacks, log=False)
         start = time.time()
         while True:
-
             discord_rpc.update_presence(
                 **{
-                    'details': 'Playing',
+                    'details': GSInstance.get_gamestate(),
                     'start_timestamp': start,
                     'large_image_key': 'default'
                 }
             )
-
             discord_rpc.update_connection()
             time.sleep(2)
             discord_rpc.run_callbacks()
