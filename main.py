@@ -15,8 +15,8 @@ pygame.init()
 
 
 def button(window, position, text):
-    font = pygame.font.SysFont("Arial", 50)
-    text_render = font.render(text, 1, (255, 255, 255))
+    font = pygame.font.SysFont("impact", 50)
+    text_render = font.render(text, True, (255, 255, 255))
     x, y, w, h = text_render.get_rect()
     x, y = position
     pygame.draw.line(window, (150, 150, 150), (x, y), (x + w, y), 0)
@@ -34,10 +34,14 @@ def draw_window():
     global b2
     b2 = button(WIN, (50, 190), "Quit")
     if GSInstance.get_gamestate() == GSInstance.get_states()[1]:
-        WIN.blit(bg, (0, 0))
+        draw_game()
         pygame.display.update()
     else:
         pygame.display.update()
+
+
+def draw_game():
+    WIN.blit(bg, (0, 0))
 
 
 def main():
