@@ -12,6 +12,7 @@ WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 bg = pygame.image.load("assets/bg.png")
 FPS = 60
 pygame.init()
+clock = pygame.time.Clock()
 
 
 def button(window, position, text):
@@ -32,7 +33,9 @@ def draw_window():
     global b1
     b1 = button(WIN, (50, 120), "Start game")
     global b2
-    b2 = button(WIN, (50, 190), "Quit")
+    b2 = button(WIN, (50, 190), "Settings")
+    global b3
+    b3 = button(WIN, (50, 260), "Quit")
     if GSInstance.get_gamestate() == GSInstance.get_states()[1]:
         draw_game()
         pygame.display.update()
@@ -42,10 +45,14 @@ def draw_window():
 
 def draw_game():
     WIN.blit(bg, (0, 0))
+    font = pygame.font.SysFont("Arial", 20)
+    localfps = str(clock.get_fps())
+    localfps = localfps.split(".")
+    text_render = font.render(localfps[0], True, (255, 255, 255))
+    WIN.blit(text_render, (0, 0))
 
 
 def main():
-    clock = pygame.time.Clock()
     run = True
     while run:
         clock.tick(FPS)
@@ -59,6 +66,8 @@ def main():
                     GSInstance.set_gamestate(1)
                     draw_window()
                 elif b2.collidepoint(pygame.mouse.get_pos()):
+                    print("Settings Button Clicked")
+                elif b3.collidepoint(pygame.mouse.get_pos()):
                     run = False
 
     pygame.quit()
