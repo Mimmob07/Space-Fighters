@@ -4,9 +4,9 @@ import threading
 from discord import GSInstance
 
 SP = discord.SpaceGameRPC()
-x = threading.Thread(target=SP.start)
-x.daemon = True
-x.start()
+RPCThread = threading.Thread(target=SP.start)
+RPCThread.daemon = True
+RPCThread.start()
 WIDTH, HEIGHT = 900, 500
 WIN = pygame.display.set_mode((WIDTH, HEIGHT))
 bg = pygame.image.load("assets/bg.png")
