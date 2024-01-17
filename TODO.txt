@@ -1,0 +1,4 @@
+ - Make class for player (Done)
+ - Make class for enemies (In Progress)
+ - Render enemies
+ - AI for enemies

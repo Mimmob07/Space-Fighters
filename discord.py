@@ -30,7 +30,7 @@ class SpaceGameRPC:
         while True:
             discord_rpc.update_presence(
                 **{
-                    'details': GSInstance.get_gamestate(),
+                    'details': GSInstance.GAMESTATE,
                     'start_timestamp': start,
                     'large_image_key': 'default'
                 }
