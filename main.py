@@ -1,12 +1,18 @@
 import json
+import math
 import pygame
 import discord
 import threading
+from bullet import bulletPool
 from discord import GSInstance
-from entities import player
+from entities import player, enemy
 
 global player1
 player1 = player()
+global enemy1
+enemy1 = enemy(401.5, 0)
+global bullets
+bullets = bulletPool() # AHHHHHH
 SP = discord.SpaceGameRPC()
 RPCThread = threading.Thread(target=SP.start)
 RPCThread.daemon = True
@@ -55,7 +61,11 @@ def draw_game():
     localfps = str(clock.get_fps())
     localfps = localfps.split(".")
     text_render = font.render(localfps[0], True, (255, 255, 255))
+    for i in range(len(bullets.pool)):
+        if bullets.pool[i].active:
+            WIN.blit(bullets.pool[i].sprite, (bullets.pool[i].x, bullets.pool[i].y))
     WIN.blit(player1.sprite, (player1.x, player1.y))
+    WIN.blit(enemy1.sprite, (enemy1.x, enemy1.y))
     WIN.blit(text_render, (0, 0))
 
 
@@ -92,6 +102,12 @@ while alive:
                 player1.y_change = -5
             elif event.key == pygame.K_DOWN:
                 player1.y_change = 5
+            elif event.key == pygame.K_SPACE:
+                bullet = bullets.grabBullet()
+                bullet.active = True
+                bullet.x = player1.x
+                bullet.y = player1.y + 10
+                bullet.angle = 270 * (math.pi / 180)
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                 player1.x_change = 0
@@ -99,4 +115,8 @@ while alive:
                 player1.y_change = 0
     player1.updatePosition()
     player1.checkBorders()
+    enemy1.updatePosition()
+    for i in range(len(bullets.pool)):
+        if bullets.pool[i].active:
+            bullets.pool[i].updatePosition()
 pygame.quit()

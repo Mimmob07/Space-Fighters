@@ -1,4 +1,7 @@
  - Make class for player (Done)
- - Make class for enemies (In Progress)
- - Render enemies
- - AI for enemies
+ - Make class for enemies (Done)
+ - Render enemies (Done)
+ - AI for enemies 
+ - Bullets and shooting (Done)
+ - Health and damage
+ - Settings page

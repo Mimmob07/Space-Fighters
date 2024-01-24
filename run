@@ -1,0 +1,2 @@
+#!/bin/bash
+PYGAME_HIDE_SUPPORT_PROMPT='hide' python3 main.py
