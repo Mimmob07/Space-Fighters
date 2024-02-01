@@ -1,7 +1,9 @@
  - Make class for player (Done)
  - Make class for enemies (Done)
  - Render enemies (Done)
- - AI for enemies 
+ - AI for enemies (Functional)
+   - Let enemy shoot every 1 second (Done)
  - Bullets and shooting (Done)
- - Health and damage
- - Settings page
+ - Health and damage (In Progress)
+  - Find correct hitbox for player and enemy (Done)
+- Settings page

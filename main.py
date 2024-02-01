@@ -1,25 +1,25 @@
 import json
-import math
 import pygame
 import discord
 import threading
-from bullet import bulletPool
+from bullet import Bulletpool
 from discord import GSInstance
-from entities import player, enemy
+from entities import Player, Enemy
 
 global player1
-player1 = player()
+player1 = Player()
 global enemy1
-enemy1 = enemy(401.5, 0)
-global bullets
-bullets = bulletPool() # AHHHHHH
+enemy1 = Enemy(401.5, 0)
+global player_bullets
+player_bullets = Bulletpool()
 SP = discord.SpaceGameRPC()
 RPCThread = threading.Thread(target=SP.start)
 RPCThread.daemon = True
 RPCThread.start()
 with open("settings.json", "r") as settingsFile:
     settings = json.load(settingsFile)
-WIN = pygame.display.set_mode((settings["WIDTH"], settings["HEIGHT"]))
+# Remove flag to unscale if window appears too large
+WIN = pygame.display.set_mode((settings["WIDTH"], settings["HEIGHT"]), flags=pygame.SCALED)
 bg = pygame.image.load("assets/bg.png")
 spaceship2 = pygame.image.load("assets/spaceship2.png")
 pygame.init()
@@ -36,7 +36,6 @@ def button(window, position, text):
     pygame.draw.line(window, (150, 150, 150), (x, y - 2), (x, y + h), 0)
     pygame.draw.line(window, (50, 50, 50), (x, y + h), (x + w, y + h), 0)
     pygame.draw.line(window, (50, 50, 50), (x + w, y + h), [x + w, y], 0)
-    # pygame.draw.rect(window, (100, 100, 100), (x, y, w, h))
     return window.blit(text_render, (x, y))
 
 
@@ -56,17 +55,41 @@ def draw_window():
 
 
 def draw_game():
+
     WIN.blit(bg, (0, 0))
     font = pygame.font.SysFont("Arial", 20)
-    localfps = str(clock.get_fps())
-    localfps = localfps.split(".")
-    text_render = font.render(localfps[0], True, (255, 255, 255))
-    for i in range(len(bullets.pool)):
-        if bullets.pool[i].active:
-            WIN.blit(bullets.pool[i].sprite, (bullets.pool[i].x, bullets.pool[i].y))
-    WIN.blit(player1.sprite, (player1.x, player1.y))
-    WIN.blit(enemy1.sprite, (enemy1.x, enemy1.y))
+
+    local_fps = str(clock.get_fps())
+    local_fps = local_fps.split(".")
+    text_render = font.render(local_fps[0], True, (255, 255, 255))
     WIN.blit(text_render, (0, 0))
+
+    if player1.health >= 0:
+        player1.update()
+        player_rect = WIN.blit(player1.sprite, (player1.x, player1.y))
+    else:
+        GSInstance.set_gamestate(0)
+    if enemy1.health >= 0:
+        enemy1.update()
+        enemy_rect = WIN.blit(enemy1.sprite, (enemy1.x, enemy1.y))
+    else:
+        enemy1.kill()
+
+    for bullet in player_bullets.pool:
+        if bullet.active:
+            bul = WIN.blit(bullet.sprite, (bullet.x, bullet.y))
+            if enemy1.health >= 0:
+                if bul.colliderect(enemy_rect):
+                    enemy1.health -= player1.damage
+                    bullet.active = False
+
+    for bullet in enemy1.bullets.pool:
+        if bullet.active:
+            bul = WIN.blit(bullet.sprite, (bullet.x, bullet.y))
+            if player1.health >= 0:
+                if bul.colliderect(player_rect):
+                    player1.health -= enemy1.damage
+                    bullet.active = False
 
 
 def draw_settings():
@@ -103,20 +126,17 @@ while alive:
             elif event.key == pygame.K_DOWN:
                 player1.y_change = 5
             elif event.key == pygame.K_SPACE:
-                bullet = bullets.grabBullet()
+                bullet = player_bullets.grabBullet()
                 bullet.active = True
                 bullet.x = player1.x
                 bullet.y = player1.y + 10
-                bullet.angle = 270 * (math.pi / 180)
         if event.type == pygame.KEYUP:
             if event.key == pygame.K_LEFT or event.key == pygame.K_RIGHT:
                 player1.x_change = 0
             if event.key == pygame.K_UP or event.key == pygame.K_DOWN:
                 player1.y_change = 0
-    player1.updatePosition()
-    player1.checkBorders()
-    enemy1.updatePosition()
-    for i in range(len(bullets.pool)):
-        if bullets.pool[i].active:
-            bullets.pool[i].updatePosition()
+
+    for i in range(len(player_bullets.pool)):
+        if player_bullets.pool[i].active:
+            player_bullets.pool[i].updatePosition()
 pygame.quit()

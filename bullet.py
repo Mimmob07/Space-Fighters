@@ -1,28 +1,25 @@
-import math
 import pygame
 
 
-class bullet:
+class Bullet:
     def __init__(self):
         self.x = 0
         self.y = 0
-        self.angle = 90
         self.active = False
         self.sprite = pygame.image.load("assets/bullet.png")
-        self.speed = 5
+        self.speed = -5
     
     def updatePosition(self):
-        self.x += self.speed * math.cos(self.angle)
-        self.y += self.speed * math.sin(self.angle)
-        if self.y < 0:
+        self.y += self.speed
+        if self.y < 0 or self.y > 500:
             self.active = False
 
 
-class bulletPool:
+class Bulletpool:
     def __init__(self):
         self.pool = []
         for i in range(30):
-            bul = bullet()
+            bul = Bullet()
             self.pool.append(bul)
     
     def grabBullet(self):
